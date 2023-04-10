@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title> 
+        {% block title %}
+            
+        {% endblock title %}
+           | Expense Tracker</title>
+    </head>
+    <body>
+        <nav class='py-6 px-6 flex justify-between items-center border-b border-gray-200'>
+            <a href='/' class='text-xl font-semibold'>Expense Tracker</a>
+            <div class='space-x-6'>
+                
+                {% if request.user.is_authenticated %}  
+                    <a href="#" class='px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700'>History</a>
+                    <a href="{% url 'signout' %}" class='px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700'>Log Out</a>
+                {% else %}
+                    <a href="{% url 'sign_up' %}" class='px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700 shadow-cyan-500/50'>Sign Up</a>
+                    <a href="{% url 'login' %}" class='px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700'>Log In</a>
+                {% endif %}          
+                </div>
+        </nav>
+
+<div class='space-x-6'>
+  {% block content %}
+    
+  {% endblock content %}
+</div>
+    
