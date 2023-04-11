@@ -21,28 +21,61 @@
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Budget End Time
                 </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Budget Left
+                </th>
               </tr>
             </thead>
+           
+           {% if budget_expense_list %}
+           <tbody class="bg-white divide-y divide-gray-200">
+                
+            {% for budget,expense in budget_expense_list %}
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{budget.category}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">{{budget.limit}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">{{budget.timestamp}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  {{budget.end_date}}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{expense.left}}</div>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+           {% else %}
+            
+           
             <tbody class="bg-white divide-y divide-gray-200">
-              {% for p in budget %}
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{p.category}}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{p.limit}}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{p.timestamp}}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    {{p.end_date}}
-                  </span>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
+                
+                {% for b in budget %}
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">{{b.category}}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">{{b.limit}}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">{{b.timestamp}}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      {{b.end_date}}
+                    </span>
+                  </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
           </table>
         </div>
       </div>
