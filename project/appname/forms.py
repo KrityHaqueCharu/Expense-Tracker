@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Budget
+from .models import Category, Budget, Expense
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
@@ -58,3 +58,8 @@ class BudgetForm(forms.ModelForm):
     class Meta:
         model = Budget
         fields = ['limit', 'end_date']
+
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Expense
+        fields = ['amount', 'reason']

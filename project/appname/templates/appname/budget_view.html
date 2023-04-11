@@ -27,7 +27,7 @@
               </tr>
             </thead>
            
-           {% if budget_expense_list %}
+           {% comment %} {% if budget_expense_list %}
            <tbody class="bg-white divide-y divide-gray-200">
                 
             {% for budget,expense in budget_expense_list %}
@@ -51,8 +51,8 @@
                 </td>
             </tr>
             {% endfor %}
-          </tbody>
-           {% else %}
+          </tbody> {% endcomment %}
+           {% comment %} {% else %} {% endcomment %}
             
            
             <tbody class="bg-white divide-y divide-gray-200">
@@ -73,9 +73,12 @@
                       {{b.end_date}}
                     </span>
                   </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">{{b.left}}</div>
+                  </td>
                 </tr>
             {% endfor %}
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
           </table>
         </div>
       </div>

@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout,authenticate
+from django.contrib import messages
 from .models import Category, Budget, Expense
-from .forms import CategoryForm,SignupForm,BudgetForm
+from .forms import CategoryForm,SignupForm,BudgetForm, ExpenseForm
 
 # Create your views here.
 @login_required
@@ -17,12 +18,36 @@ def category_list(request):
     return render(request,'appname/index.html',context)
 
 @login_required
-def expense_create(request,id):
-    
+def expense_create(request, id):
+    category = get_object_or_404(Category, id=id)
+    today = timezone.now().date()
+    user = request.user
+    existing_budget = Budget.objects.filter(user=user, category=category, end_date__gte=today).first()
+    if existing_budget is None:
+        messages.error(request, f'You do not have a budget for {category.name}. Please create a budget first.')
+        return redirect('budget-create', id=id)
+    limit = existing_budget.limit
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            if amount > limit:
+                messages.error(request, 'The amount you entered is greater than your budget limit.')
+                return render(request, 'appname/expense-create.html', {'form': form})
+            expense = form.save(commit=False)
+            existing_budget.left = existing_budget.left - amount
+            existing_budget.save()
+            print(existing_budget.left)
+            expense.category = category
+            expense.user = user
+            expense.budget = existing_budget
+            expense.save()
+            messages.success(request, 'Expense created successfully.')
+            return redirect('category_list')
+    else:
+        form = ExpenseForm()
+    return render(request, 'appname/expense-create.html', {'form': form})
 
-    return render(request,'appname/expense-create.html')
-
-# @login_required
 # def budget_create(request,id):
 #     c = Category.objects.get(id=id)
 #     if request.method == 'POST':
@@ -50,10 +75,12 @@ def budget_create(request, id):
         form = BudgetForm(request.POST)
         if form.is_valid():
             end_date = form.cleaned_data['end_date']
+            limit = form.cleaned_data['limit']
             if end_date < today:
                 error_message = 'End date should be in the future.'
                 return render(request, 'appname/budget-create.html', {'form': form, 'error_message': error_message})
             x = form.save(commit=False)
+            x.left=limit
             x.category = c
             x.user = request.user
             x.save()
@@ -132,18 +159,18 @@ def budget_view(request,pk):
     today = timezone.now().date()
     cate = Category.objects.get(id=pk)
     budget = Budget.objects.filter(category=cate)
-    expense = Expense.objects.filter(user=user, category=cate)
-    print("This is expense",expense)
-    if expense:
-        budget_expense_list = list(zip(budget, expense))
-    # print(budget)
-        context ={
-            # "budget": budget,
-            # "expense": expense,
-            "budget_expense_list": budget_expense_list,
-        }
-    else:
-        context ={
-            "budget": budget,
-        }
+    # expense = Expense.objects.filter(user=user, category=cate)
+    # print("This is expense",expense)
+    # if expense:
+    #     budget_expense_list = list(zip(budget, expense))
+    # # print(budget)
+    #     context ={
+    #         # "budget": budget,
+    #         # "expense": expense,
+    #         "budget_expense_list": budget_expense_list,
+    #     }
+    
+    context ={
+         "budget": budget,
+    }
     return render(request,'appname/budget_view.html',context)

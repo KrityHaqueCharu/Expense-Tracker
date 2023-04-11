@@ -9,18 +9,18 @@
     <form method="post" class="border rounded-md p-8 max-w-lg mx-auto mb-3">
       {% csrf_token %}
       <div class="mb-3">
-          <label class="inline-block mb-2">Limit </label>
+          <label class="inline-block mb-2">Limit : </label>
           {{form.limit}}
       </div>
   
   
       <div class="mb-3">
-          <label class="inline-block mb-2">End date </label>
+          <label class="inline-block mb-2">End date : </label>
           {{form.end_date}}
       </div>
       <input type="submit" value="Add" class="bg-blue-500 hover:bg-blue-600 text-white rounded-md py-2 px-4 mt-4 cursor-pointer">
     </form>
-  
+    <h2>{{error_message}}</h2>
   
     <a href="{% url 'category_list' %}" class="block mt-8 text-blue-500 hover:text-blue-600">Back to Home</a>
   </div>

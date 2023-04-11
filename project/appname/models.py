@@ -15,9 +15,16 @@ class Budget(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     limit = models.DecimalField(max_digits=10, decimal_places=2)
+    left = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     created = models.DateTimeField(auto_now_add=True)
     timestamp = models.DateTimeField(default=datetime.now, null=True, blank=True)
     end_date= models.DateField()
+
+#So in default, I setted the left field's value as same as Limit
+    def set_left_default(self):
+        self.left = self.limit
+        self.save()
+
 
     def __str__(self):
         return f'{self.category} - {self.limit}'
@@ -27,7 +34,6 @@ class Expense(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE,default=1)
     reason = models.TextField(blank=True, null=True)
-    left = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     timestamp = models.DateTimeField(default=datetime.now, null=True, blank=True)
     amount = models.DecimalField(max_digits=100, decimal_places=2)
 
