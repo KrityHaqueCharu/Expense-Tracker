@@ -24,16 +24,18 @@ def expense_create(request, id):
     user = request.user
     existing_budget = Budget.objects.filter(user=user, category=category, end_date__gte=today).first()
     if existing_budget is None:
-        messages.error(request, f'You do not have a budget for {category.name}. Please create a budget first.')
-        return redirect('budget-create', id=id)
-    limit = existing_budget.limit
+        # messages.error(request, f'You do not have a budget for {category.name}. Please create a budget first.')
+        # return redirect('budget-create', id=id)
+        error_message = 'Please set a budget for this catagory first'
+        return render(request, 'appname/budget-create.html', {'error_message': error_message})
+    left = existing_budget.left
     if request.method == 'POST':
         form = ExpenseForm(request.POST)
         if form.is_valid():
             amount = form.cleaned_data['amount']
-            if amount > limit:
-                messages.error(request, 'The amount you entered is greater than your budget limit.')
-                return render(request, 'appname/expense-create.html', {'form': form})
+            if amount > left:
+                error_message = 'You do not have sufficient budget for this'
+                return render(request, 'appname/expense-create.html', {'form': form,'error_message': error_message})
             expense = form.save(commit=False)
             existing_budget.left = existing_budget.left - amount
             existing_budget.save()
@@ -174,3 +176,11 @@ def budget_view(request,pk):
          "budget": budget,
     }
     return render(request,'appname/budget_view.html',context)
+
+
+def history(request):
+    expense= Expense.objects.filter(user=request.user)
+    context = {
+        'expense': expense,
+    }
+    return render(request,'appname/history.html',context)

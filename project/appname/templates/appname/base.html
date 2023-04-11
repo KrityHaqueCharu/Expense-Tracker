@@ -13,7 +13,7 @@
             <div class='space-x-6'>
                 
                 {% if request.user.is_authenticated %}  
-                    <a href="#" class='px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700'>History</a>
+                    <a href="{% url 'history' %}" class='px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700'>History</a>
                     <a href="{% url 'signout' %}" class='px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700'>Log Out</a>
                 {% else %}
                     <a href="{% url 'sign_up' %}" class='px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-blue-700 shadow-cyan-500/50'>Sign Up</a>
